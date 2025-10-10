@@ -8,8 +8,7 @@
 		"format": "prettier --write \"**/*.{js,jsx,ts,tsx,md,json}\" --ignore-path ../../../../.prettierignore",
 		"lint": "next lint",
 		"start": "next start",
-		"typecheck": "tsc",
-    "vercel-build": "pnpm install --no-frozen-lockfile && pnpm run build"
+		"typecheck": "tsc"
 	},
 	"dependencies": {
 		"@graphql-typed-document-node/core": "^3.2.0",
