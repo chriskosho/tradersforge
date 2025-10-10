@@ -63,6 +63,7 @@ export async function getStaticProps({ params }) {
   if (!content) {
     return { notFound: true };
   }
+console.log("HTML input sample:", content.content.slice(0, 400));
 
   const toc = await generateTOC(content.content);
 
