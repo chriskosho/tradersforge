@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import Disclaimer from '../components/Disclaimer';
 import { resizeImage } from '@starter-kit/utils/image';
 import { addArticleJsonLd } from '@starter-kit/utils/seo/addArticleJsonLd';
