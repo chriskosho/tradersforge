@@ -146,7 +146,7 @@ const Post = ({ publication, post }: PostProps) => {
 
 {/* Buy Me A Coffee — add this immediately after the post content */}
 <div className="mt-6 text-center">
-  <p className="">
+  <p className="hashnode-content-style">
     ☕ If you found this information helpful, please consider{' '}
     <Link href="/donate">
       buying me a coffee
