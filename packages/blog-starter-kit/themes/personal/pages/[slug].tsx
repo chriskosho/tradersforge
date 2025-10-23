@@ -146,9 +146,9 @@ const Post = ({ publication, post }: PostProps) => {
 
 {/* Buy Me A Coffee — add this immediately after the post content */}
 <div className="mt-6 text-center">
-  <p className="text-sm text-slate-700 dark:text-neutral-300">
-    If you found this information helpful, please consider{' '}
-    <Link href="/donate" className="text-blue-600 hover:underline">
+  <p className="">
+    ☕ If you found this information helpful, please consider{' '}
+    <Link href="/donate">
       buying me a coffee
     </Link>{' '}
     :)
