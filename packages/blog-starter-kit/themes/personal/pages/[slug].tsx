@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Disclaimer from '../components/Disclaimer';
 import { resizeImage } from '@starter-kit/utils/image';
 import { addArticleJsonLd } from '@starter-kit/utils/seo/addArticleJsonLd';
@@ -143,6 +144,19 @@ const Post = ({ publication, post }: PostProps) => {
 				</div>
 			)}
 			<MarkdownToHtml contentMarkdown={post.content.markdown} />
+
+{/* Buy Me A Coffee — add this immediately after the post content */}
+<div className="mt-6 text-center">
+  <p className="text-sm text-slate-700 dark:text-neutral-300">
+    If you found this information helpful, please consider{' '}
+    <Link href="/donate" className="text-blue-600 hover:underline">
+      buying me a coffee
+    </Link>{' '}
+    :)
+  </p>
+</div>
+
+      
       <Disclaimer />
 			{(post.tags ?? []).length > 0 && (
 				<div className="mx-auto w-full text-slate-600 dark:text-neutral-300 md:max-w-screen-md">
