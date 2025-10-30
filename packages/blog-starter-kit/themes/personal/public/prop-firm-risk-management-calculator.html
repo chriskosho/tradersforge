@@ -68,10 +68,10 @@
 <p>Always trade according to what you’re willing to lose — not what you hope to gain.</p>
     <p>If you’ve ever wondered whether to trade NQ or MNQ, or how many contracts you can safely manage, this calculator is for you. </p><p><b>The first thing you need to do is understand the drawdown rules for your prop firm accounts.</b></p><p><i>After you understand your prop firm's rules</i>, enter your available drawdown, your risk tolerance, and the dollars per tick (default is $5 for NQ). The calculator will instantly show how many contracts — and which instrument — you can safely trade within your risk limits.</p>
     <label for="drawdown">Drawdown ($)</label>
-    <input type="number" id="drawdown" value="1000" step="0.01">
+    <input type="number" id="drawdown" value="1000" step="100">
 
     <label for="riskPercent">Max Risk (%)</label>
-    <input type="number" id="riskPercent" value="20" step="0.1">
+    <input type="number" id="riskPercent" value="20" step="5">
     <small style="color:#666;">5 losses in the bank is 20%. 4 losses in the bank is 25%. </small>
 
     <label for="stopLoss">Stop Loss (ticks)</label>
@@ -107,7 +107,7 @@
         message = `You are safe to trade ${nqContracts.toFixed(1)} NQ contract${nqContracts >= 2 ? "s" : ""}.`;
       } else {
         const mnqContracts = nqContracts * 10;
-        message = `You are safe to trade ${mnqContracts.toFixed(1)} MNQ contract${mnqContracts >= 2 ? "s" : ""}.`;
+        message = `You are safe to trade ${mnqContracts} MNQ contract${mnqContracts >= 2 ? "s" : ""}.`;
       }
 
       document.getElementById("result").textContent = message;
