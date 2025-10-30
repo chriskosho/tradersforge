@@ -146,7 +146,7 @@
   message = `You are safe to trade <span style="color: #16a34a; font-weight: bold;">${mnqContracts}</span> MNQ contract${mnqContracts >= 2 ? "s" : ""} with a ${stopLoss} tick stop loss because that is ${riskPercent}% of your $${drawdown} drawdown.`;
 }
 
-      document.getElementById("result").textContent = message;
+  document.getElementById("result").innerHTML = message;
     }
   </script>
 </body>
