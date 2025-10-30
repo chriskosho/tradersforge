@@ -104,7 +104,7 @@
     This method keeps you disciplined, consistent, and in the game — even after a string of losses.
   </p>
 </section>
-
+    <label for="drawdown">Drawdown ($)</label>
     <input type="number" id="drawdown" value="1000" step="100">
 
     <label for="riskPercent">Max Risk (%)</label>
@@ -139,12 +139,12 @@
 
       let message = "";
 
-      if (nqContracts >= 1) {
-        message = `You are safe to trade <span style="color: #16a34a; font-weight: bold;">${nqContracts.toFixed(1)} NQ contract${nqContracts >= 2 ? "s" : ""}</span> with a ${stopLoss} tick stop loss because that is ${riskPercent}% of your $${drawdown} drawdown.`;
-      } else {
-        const mnqContracts = nqContracts * 10;
-        message = `You are safe to trade <span style="color: #16a34a; font-weight: bold;">${mnqContracts} MNQ contract${mnqContracts >= 2 ? "s" : ""}</span> with a ${stopLoss} tick stop loss because that is ${riskPercent}% of your $${drawdown} drawdown.`;
-      }
+    if (nqContracts >= 1) {
+  message = `You are safe to trade <span style="color: #16a34a; font-weight: bold;">${nqContracts.toFixed(1)}</span> NQ contract${nqContracts >= 2 ? "s" : ""} with a ${stopLoss} tick stop loss because that is ${riskPercent}% of your $${drawdown} drawdown.`;
+} else {
+  const mnqContracts = nqContracts * 10;
+  message = `You are safe to trade <span style="color: #16a34a; font-weight: bold;">${mnqContracts}</span> MNQ contract${mnqContracts >= 2 ? "s" : ""} with a ${stopLoss} tick stop loss because that is ${riskPercent}% of your $${drawdown} drawdown.`;
+}
 
       document.getElementById("result").textContent = message;
     }
