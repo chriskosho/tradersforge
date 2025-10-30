@@ -105,10 +105,10 @@
       let message = "";
 
       if (nqContracts >= 1) {
-        message = `You are safe to trade ${nqContracts.toFixed(1)} NQ contract${nqContracts >= 2 ? "s" : ""}.`;
+        message = `You are safe to trade ${nqContracts.toFixed(1)} NQ contract${nqContracts >= 2 ? "s" : ""} with a ${stopLoss} tick stop loss because that is ${riskPercent}% of your $${drawdown} drawdown.`;
       } else {
         const mnqContracts = nqContracts * 10;
-        message = `You are safe to trade ${mnqContracts} MNQ contract${mnqContracts >= 2 ? "s" : ""}.`;
+        message = `You are safe to trade ${mnqContracts} MNQ contract${mnqContracts >= 2 ? "s" : ""} with a ${stopLoss} tick stop loss because that is ${riskPercent}% of your $${drawdown} drawdown.`;
       }
 
       document.getElementById("result").textContent = message;
