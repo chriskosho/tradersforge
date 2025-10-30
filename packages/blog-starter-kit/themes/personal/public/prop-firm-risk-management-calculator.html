@@ -65,8 +65,8 @@
 </head>
 <body>
   <div class="calculator">
-    <h2>Prop Firm Risk Management Calculator</h2>
 <section class="calculator-intro" aria-labelledby="calc-heading" style="max-width:800px;margin:0 auto;padding:1rem 1.25rem;font-family:inherit;color:inherit;">
+      <h2>Prop Firm Risk Management Calculator</h2>
   <p id="calc-heading" style="margin-bottom:0.5rem;"><i>Always trade according to what you’re willing to lose — not what you hope to gain.</i></p>
 
   <p style="margin-top:0.5rem;line-height:1.5;">
@@ -140,10 +140,10 @@
       let message = "";
 
     if (nqContracts >= 1) {
-  message = `You are safe to trade <span style="color: #16a34a; font-weight: bold;">${nqContracts.toFixed(1)}</span> NQ contract${nqContracts >= 2 ? "s" : ""} with a ${stopLoss} tick stop loss because that is ${riskPercent}% of your $${drawdown} drawdown.`;
+  message = `You are safe to trade <span style="color: #16a34a; font-weight: bold;">${nqContracts.toFixed(1)} NQ contract${nqContracts >= 2 ? "s" : ""}</span> with a ${stopLoss} tick stop loss because that is ${riskPercent}% of your $${drawdown} drawdown.`;
 } else {
   const mnqContracts = nqContracts * 10;
-  message = `You are safe to trade <span style="color: #16a34a; font-weight: bold;">${mnqContracts}</span> MNQ contract${mnqContracts >= 2 ? "s" : ""} with a ${stopLoss} tick stop loss because that is ${riskPercent}% of your $${drawdown} drawdown.`;
+  message = `You are safe to trade <span style="color: #16a34a; font-weight: bold;">${mnqContracts} MNQ contract${mnqContracts >= 2 ? "s" : ""}</span> with a ${stopLoss} tick stop loss because that is ${riskPercent}% of your $${drawdown} drawdown.`;
 }
 
   document.getElementById("result").innerHTML = message;
