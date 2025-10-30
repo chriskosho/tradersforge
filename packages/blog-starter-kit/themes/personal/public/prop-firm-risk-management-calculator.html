@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Futures Contract Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f9fb;
+      padding: 20px;
+      color: #333;
+    }
+    .calculator {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1em;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      box-sizing: border-box;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      background: #0078d7;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005fa3;
+    }
+    .result {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <h2>Futures Contract Calculator</h2>
+
+    <label for="drawdown">Drawdown ($)</label>
+    <input type="number" id="drawdown" value="1000" step="0.01">
+
+    <label for="riskPercent">Max Risk (%)</label>
+    <input type="number" id="riskPercent" value="20" step="0.1">
+
+    <label for="stopLoss">Stop Loss (ticks)</label>
+    <input type="number" id="stopLoss" value="100" step="1">
+
+    <label for="tickValue">NQ $ per Tick</label>
+    <input type="number" id="tickValue" value="5" step="0.01">
+
+    <button onclick="calculateContracts()">Calculate</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculateContracts() {
+      const drawdown = parseFloat(document.getElementById("drawdown").value);
+      const riskPercent = parseFloat(document.getElementById("riskPercent").value);
+      const stopLoss = parseFloat(document.getElementById("stopLoss").value);
+      const tickValue = parseFloat(document.getElementById("tickValue").value);
+
+      // Step 1: Calculate max risk in dollars
+      const maxRisk = drawdown * (riskPercent / 100);
+
+      // Step 2: Risk per NQ contract
+      const riskPerContract = stopLoss * tickValue;
+
+      // Step 3: Number of NQ contracts
+      const nqContracts = maxRisk / riskPerContract;
+
+      let message = "";
+
+      if (nqContracts >= 1) {
+        message = `You are safe to trade ${nqContracts.toFixed(1)} NQ contract${nqContracts >= 2 ? "s" : ""}.`;
+      } else {
+        const mnqContracts = nqContracts * 10;
+        message = `You are safe to trade ${mnqContracts.toFixed(1)} MNQ contract${mnqContracts >= 2 ? "s" : ""}.`;
+      }
+
+      document.getElementById("result").textContent = message;
+    }
+  </script>
+</body>
+</html>
