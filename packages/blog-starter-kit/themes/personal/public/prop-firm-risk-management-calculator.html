@@ -66,14 +66,49 @@
 <body>
   <div class="calculator">
     <h2>Prop Firm Risk Management Calculator</h2>
-<p>Always trade according to what you’re willing to lose — not what you hope to gain.</p>
-    <p>If you’ve ever wondered whether to trade NQ or MNQ, or how many contracts you can safely manage, this calculator is for you. </p><p><b>The first thing you need to do is understand the drawdown rules for your prop firm accounts.</b></p><p><i>After you understand your prop firm's rules</i>, enter your available drawdown, your risk tolerance, and the dollars per tick (default is $5 for NQ). The calculator will instantly show how many contracts — and which instrument — you can safely trade within your risk limits.</p>
-    <label for="drawdown">Drawdown ($)</label>
+<section class="calculator-intro" aria-labelledby="calc-heading" style="max-width:800px;margin:0 auto;padding:1rem 1.25rem;font-family:inherit;color:inherit;">
+  <h2 id="calc-heading" style="margin-bottom:0.5rem;">Always trade according to what you’re willing to lose — not what you hope to gain.</h2>
+
+  <p style="margin-top:0.5rem;line-height:1.5;">
+    If you’ve ever wondered whether to trade <strong>NQ</strong> or <strong>MNQ</strong>, or how many contracts you can safely manage, this calculator is for you.
+  </p>
+
+  <p style="line-height:1.5;">
+    <strong>Before you begin:</strong> make sure you understand the <strong>drawdown rules</strong> for your prop firm account. Once you know those rules, enter:
+  </p>
+
+  <ul style="line-height:1.6;margin-left:1.25rem;">
+    <li><strong>Available drawdown</strong> for your account</li>
+    <li><strong>Risk tolerance</strong> (percent of drawdown you’ll risk per trade)</li>
+    <li><strong>Dollars per tick</strong> (defaults to <code>$5</code> for NQ)</li>
+  </ul>
+
+  <p style="line-height:1.5;">
+    The calculator will instantly show how many contracts — and which instrument — you can safely trade within your limits.
+  </p>
+
+  <aside style="background:#f3f7fb;border-left:4px solid #0078d7;padding:0.75rem 1rem;border-radius:6px;margin-top:0.75rem;">
+    <strong>Why this works — the “five losses in the bank” rule:</strong>
+    <p style="margin:0.5rem 0 0;line-height:1.5;">
+      Always keep five full losses in the bank. That means you should risk no more than <strong>20% of your drawdown on any single trade</strong>. If you hit five losses in a row, you’ll have exhausted your drawdown but not blown the account.
+    </p>
+
+    <ul style="margin:0.5rem 0 0 1.25rem;line-height:1.4;">
+      <li>Example inputs: <code>Drawdown = $1,000</code>, <code>Stop = 100 ticks</code>, <code>Tick = $5 (NQ)</code>.</li>
+      <li>One NQ contract risk = <code>100 × $5 = $500</code>.</li>
+      <li>20% of drawdown = <code>$200</code>. So <code>$200 ÷ $500 = 0.4 NQ</code> → trade <strong>4 MNQ</strong>.</li>
+    </ul>
+  </aside>
+
+  <p style="margin-top:0.75rem;line-height:1.5;">
+    This method keeps you disciplined, consistent, and in the game — even after a string of losses.
+  </p>
+</section>
+
     <input type="number" id="drawdown" value="1000" step="100">
 
     <label for="riskPercent">Max Risk (%)</label>
     <input type="number" id="riskPercent" value="20" step="5">
-    <small style="color:#666;">5 losses in the bank is 20%. 4 losses in the bank is 25%. </small>
 
     <label for="stopLoss">Stop Loss (ticks)</label>
     <input type="number" id="stopLoss" value="100" step="1">
@@ -105,10 +140,10 @@
       let message = "";
 
       if (nqContracts >= 1) {
-        message = `You are safe to trade ${nqContracts.toFixed(1)} NQ contract${nqContracts >= 2 ? "s" : ""} with a ${stopLoss} tick stop loss because that is ${riskPercent}% of your $${drawdown} drawdown.`;
+        message = `You are safe to trade <span style="color: #16a34a; font-weight: bold;">${nqContracts.toFixed(1)} NQ contract${nqContracts >= 2 ? "s" : ""}</span> with a ${stopLoss} tick stop loss because that is ${riskPercent}% of your $${drawdown} drawdown.`;
       } else {
         const mnqContracts = nqContracts * 10;
-        message = `You are safe to trade ${mnqContracts} MNQ contract${mnqContracts >= 2 ? "s" : ""} with a ${stopLoss} tick stop loss because that is ${riskPercent}% of your $${drawdown} drawdown.`;
+        message = `You are safe to trade <span style="color: #16a34a; font-weight: bold;">${mnqContracts} MNQ contract${mnqContracts >= 2 ? "s" : ""}</span> with a ${stopLoss} tick stop loss because that is ${riskPercent}% of your $${drawdown} drawdown.`;
       }
 
       document.getElementById("result").textContent = message;
