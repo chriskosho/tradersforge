@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Prop Firm Eval Planner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 1.5rem;
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+    h1 { text-align: center; margin-bottom: 1rem; }
+    .card {
+      background: #020617;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      border: 1px solid #1f2937;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    .field-group { margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.25rem; }
+    label { font-size: 0.9rem; font-weight: 600; }
+    small { font-size: 0.75rem; color: #9ca3af; }
+    input, select {
+      padding: 0.6rem;
+      border-radius: 0.5rem;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 0.9rem;
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 999px;
+      background: linear-gradient(to right, #22c55e, #15803d);
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      color: #022c22;
+      margin-top: 0.5rem;
+    }
+    .results { display: none; margin-top: 1.5rem; }
+    .results-row { display: flex; justify-content: space-between; margin: 0.4rem 0; }
+    .results-label { color: #9ca3af; }
+    .results-value { font-weight: 600; }
+    .error { color: #f87171; margin-top: 0.5rem; }
+    #explanation { margin-top: 1rem; font-size: 0.95rem; line-height: 1.4; }
+    #riskReminder {
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      color: #d1d5db;
+    }
+    #riskReminder a { color: #22c55e; }
+  </style>
+</head>
+<body>
+
+  <h1>Prop Firm Eval Planner</h1>
+
+  <div class="card">
+
+    <!-- BASIC DATE PICKER -->
+    <div class="field-group">
+      <label for="renewalDate">Renewal Date</label>
+      <input type="date" id="renewalDate" />
+    </div>
+
+    <!-- INCLUDE TODAY? -->
+    <div class="field-group">
+      <label>Include Today as a Trading Day?</label>
+      <select id="includeToday">
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+    </div>
+
+    <!-- STARTING BALANCE -->
+    <div class="field-group">
+      <label for="startBalance">Account Starting Balance ($)</label>
+      <select id="startBalance">
+        <option value="10000">10,000</option>
+        <option value="25000">25,000</option>
+        <option value="50000" selected>50,000</option>
+        <option value="75000">75,000</option>
+        <option value="100000">100,000</option>
+        <option value="150000">150,000</option>
+        <option value="250000">250,000</option>
+        <option value="300000">300,000</option>
+      </select>
+    </div>
+
+    <!-- CURRENT BALANCE -->
+    <div class="field-group">
+      <label for="currentBalance">Current Balance ($)</label>
+      <input type="text" id="currentBalance" value="50,000" />
+    </div>
+
+    <!-- PROFIT TARGET -->
+    <div class="field-group">
+      <label for="profitTarget">Account Profit Target to Pass Evaluation ($)</label>
+      <input type="text" id="profitTarget" value="3,000" />
+      <small>Example: 50k account needing +3k → enter 3,000</small>
+    </div>
+
+    <button onclick="calculatePlan()">Calculate Plan</button>
+    <div id="error" class="error"></div>
+
+    <div id="results" class="results">
+      <h2>Plan Summary</h2>
+
+      <div class="results-row">
+        <div class="results-label">Trading days remaining:</div>
+        <div class="results-value" id="daysRemaining"></div>
+      </div>
+
+      <div class="results-row">
+        <div class="results-label">Target balance to pass:</div>
+        <div class="results-value" id="targetBalance"></div>
+      </div>
+
+      <div class="results-row">
+        <div class="results-label">Profit remaining needed:</div>
+        <div class="results-value" id="profitRemaining"></div>
+      </div>
+
+      <div class="results-row">
+        <div class="results-label">Average profit needed per day:</div>
+        <div class="results-value" id="avgProfit"></div>
+      </div>
+
+      <div id="explanation"></div>
+
+      <div id="riskReminder">
+        Remember to always manage your risk properly by using the "five losses in the bank" rule. <a href="https://tradersforge.vercel.app/prop-firm-risk-management-calculator.html" target="_blank">Use this calculator</a> to input your drawdown and stop loss <i>before entering a trade</i>.
+        .
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  // Auto-format commas in number inputs
+  function formatCommas(value) {
+    value = value.replace(/[^0-9]/g, "");
+    return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  document.getElementById("currentBalance").addEventListener("input", function(){
+    this.value = formatCommas(this.value);
+  });
+  document.getElementById("profitTarget").addEventListener("input", function(){
+    this.value = formatCommas(this.value);
+  });
+
+  // US holiday + weekend logic
+  function getNthWeekday(year, month, weekday, n) {
+    const first = new Date(year, month, 1);
+    const offset = (weekday - first.getDay() + 7) % 7;
+    return new Date(year, month, 1 + offset + (n - 1) * 7);
+  }
+
+  function getLastWeekday(year, month, weekday) {
+    const last = new Date(year, month + 1, 0);
+    const offset = (last.getDay() - weekday + 7) % 7;
+    return new Date(year, month, last.getDate() - offset);
+  }
+
+  function observed(date) {
+    const d = new Date(date);
+    if (d.getDay() === 6) d.setDate(d.getDate() - 1);
+    if (d.getDay() === 0) d.setDate(d.getDate() + 1);
+    return d;
+  }
+
+  function getUSHolidays(year) {
+    return [
+      observed(new Date(year,0,1)),
+      getNthWeekday(year,0,1,3),
+      getNthWeekday(year,1,1,3),
+      getLastWeekday(year,4,1),
+      observed(new Date(year,5,19)),
+      observed(new Date(year,6,4)),
+      getNthWeekday(year,8,1,1),
+      getNthWeekday(year,9,1,2),
+      observed(new Date(year,10,11)),
+      getNthWeekday(year,10,4,4),
+      observed(new Date(year,11,25)),
+    ].map(d => d.toISOString().slice(0,10));
+  }
+
+  function isWeekend(d){ return d.getDay()===0 || d.getDay()===6; }
+
+  function countTradingDays(start, end){
+    let count = 0;
+    const holidays = new Set();
+    for(let y=start.getFullYear(); y<=end.getFullYear(); y++){
+      getUSHolidays(y).forEach(h => holidays.add(h));
+    }
+    let cur = new Date(start);
+    while(cur <= end){
+      const iso = cur.toISOString().slice(0,10);
+      if(!isWeekend(cur) && !holidays.has(iso)) count++;
+      cur.setDate(cur.getDate()+1);
+    }
+    return count;
+  }
+
+  function calculatePlan() {
+    const renewal = document.getElementById("renewalDate").value;
+    const includeToday = document.getElementById("includeToday").value;
+    const startBalance = parseFloat(document.getElementById("startBalance").value);
+
+    const currentBalance = parseFloat(document.getElementById("currentBalance").value.replace(/,/g,""));
+    const profitTarget = parseFloat(document.getElementById("profitTarget").value.replace(/,/g,""));
+
+    const error = document.getElementById("error");
+    const results = document.getElementById("results");
+
+    error.textContent = "";
+    results.style.display = "none";
+
+    if (!renewal) {
+      error.textContent = "Please select your renewal date.";
+      return;
+    }
+
+    const today = new Date();
+    let startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+    if (includeToday === "no") {
+      startDate.setDate(startDate.getDate() + 1);
+    }
+
+    const endDate = new Date(renewal + "T00:00:00");
+    const daysRemaining = countTradingDays(startDate, endDate);
+
+    if (daysRemaining <= 0) {
+      error.textContent = "No trading days remain.";
+      return;
+    }
+
+    const targetBalance = startBalance + profitTarget;
+    let profitRemaining = targetBalance - currentBalance;
+    if (profitRemaining < 0) profitRemaining = 0;
+
+    const avgProfit = profitRemaining / daysRemaining;
+
+    document.getElementById("daysRemaining").textContent = daysRemaining;
+    document.getElementById("targetBalance").textContent = "$" + targetBalance.toLocaleString();
+    document.getElementById("profitRemaining").textContent = "$" + profitRemaining.toLocaleString();
+    document.getElementById("avgProfit").textContent = "$" + avgProfit.toFixed(2);
+
+    const todayText = includeToday === "yes" ? "Including today" : "Not including today";
+
+    document.getElementById("explanation").innerHTML =
+      `${todayText}, you have <strong>${daysRemaining}</strong> remaining trading days before your renewal.<br>` +
+      `To achieve your profit target of <strong>$${profitTarget.toLocaleString()}</strong> before your renewal date of <strong>${renewal}</strong>, ` +
+      `you need an average of <strong>$${avgProfit.toFixed(2)}</strong> per trading day.`;
+
+    results.style.display = "block";
+  }
+</script>
+
+</body>
+</html>
